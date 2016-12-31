@@ -1,7 +1,10 @@
 
-# SneakerBot #
+# SneakerBot#
+alpha 0.1
 
 **Automatically purchase trainers from online stores**
+
+Currently supports footpatrol.co.uk, adidas.co.uk and solebox.com.
 
 ## Prerequisites
  * Python 2.7
