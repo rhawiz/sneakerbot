@@ -17,6 +17,7 @@
     * **config**: Path to config file (see below)
 
 #### Configuration Parameters
+Check ```sample.cfg``` for an example of how a sample configuration may look like.
 
 ##### **products** - [required] Product information
 ###### ```store``` = ```solebox | adidas | footpatrol``` - [required] Website to run the bot on. 
