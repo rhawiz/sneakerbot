@@ -13,10 +13,11 @@ from selenium import webdriver
 
 import ConfigParser
 
-from selenium.common.exceptions import WebDriverException
+from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.expected_conditions import presence_of_element_located
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.common.exceptions import TimeoutException, WebDriverException
 
 from config import Config
 from stockchecker import check_stock
@@ -47,6 +48,8 @@ class SneakerBot(object):
                 res = driver.find_element_by_name(value)
             elif call == 'switch_to.frame':
                 driver.switch_to.frame(res)
+            elif call == 'get':
+                driver.get(value)
 
     def _initialise_driver(self):
         # Initialise selenium driver
@@ -61,10 +64,8 @@ class SneakerBot(object):
     def run(self):
         print "Initialising driver...\n"
         url = None
-        # Check if bypass_stock_check is set.
-        if self.CONFIG.bypass_stock_check:
-            print "bypass_stock_check set to False. Bypassing stock levels may throw an error if size and quantity not available or if quantity is set to more than the maximum order limit. It's recommended you set this to true\n"
-        else:
+
+        if not self.CONFIG.bypass_stock_check:
             print "Finding product information...\n"
 
             stock_info = check_stock(self.CONFIG.store, self.CONFIG.code, self.CONFIG.size)
@@ -72,7 +73,6 @@ class SneakerBot(object):
             if not stock_info:
                 print "Could not find product matching code '{}' for store '{}'. Make sure the product code is correct!".format(
                     self.CONFIG.code, self.CONFIG.store)
-                return
 
             url = stock_info.get("url")
             max_order = int(stock_info.get("max_order"))
@@ -103,7 +103,14 @@ class SneakerBot(object):
                 self.CONFIG.update_quantity(max_quantity)
             else:
                 print "Quantity OK.\n"
+        else:
+            print "bypass_stock_check set to False. Bypassing stock levels may throw an error if size and quantity not available or if quantity is set to more than the maximum order limit. It's recommended you set this to true\n"
+            if not self.CONFIG.url:
+                stock_info = check_stock(self.CONFIG.store, self.CONFIG.code, self.CONFIG.size)
+                url = stock_info.get("url")
 
+            else:
+                url = self.CONFIG.url
         # Get list of javascript injection_info to call
         injections = self.CONFIG.injection_info.get("injection")
         max_attempts = self.CONFIG.injection_info.get("max_attempts")
@@ -135,10 +142,21 @@ class SneakerBot(object):
             wait_for = inj_info.get("wait_for", None)
 
             if wait_for:
-                try:
-                    WebDriverWait(self.driver, 5).until(presence_of_element_located((By.XPATH, wait_for)))
-                except WebDriverException, e:
-                    print e
+                wait_for_call, wait_for_value = wait_for
+                wait_for_value = wait_for_value.format(**params)
+                if wait_for_call == 'xpath':
+                    WebDriverWait(self.driver, 60).until(
+                        expected_conditions.presence_of_element_located((By.XPATH, wait_for_value)))
+                elif wait_for_call == 'id':
+                    WebDriverWait(self.driver, 60).until(
+                        expected_conditions.presence_of_element_located((By.ID, wait_for_value)))
+                elif wait_for_call == 'name':
+                    WebDriverWait(self.driver, 60).until(
+                        expected_conditions.presence_of_element_located((By.NAME, wait_for_value)))
+                elif wait_for_call == 'class':
+                    WebDriverWait(self.driver, 60).until(
+                        expected_conditions.presence_of_element_located((By.CLASS_NAME, wait_for_value)))
+
             attempt = 0
             success = False
 
@@ -162,7 +180,7 @@ class SneakerBot(object):
 
 
 @click.command()
-@click.option('--config', default='../sample.cfg', prompt='Config file path', help='Config file path')
+@click.option('--config', default='../sample_local.cfg', prompt='Config file path', help='Config file path')
 def main(config):
     c = Config(config)
     bot = SneakerBot(c)

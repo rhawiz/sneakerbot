@@ -10,6 +10,15 @@ from tabulate import tabulate
 
 
 def check_stock(store, code, size):
+    empty_data = {
+        "qty_available": 0,
+        "max_order": 0,
+        "size": 0,
+        "name": '',
+        "price": '',
+        "url": '',
+        "code": ''
+    }
     if store == "adidas":
         code = string.upper(code)
         url = "http://www.adidas.co.uk/search?q={code}".format(code=code)
@@ -19,7 +28,7 @@ def check_stock(store, code, size):
         # Check if code is valid by looking for No Results message on page
         invalid_code = soup.find(name="div", attrs={"class": "nohitsmessage"})
         if invalid_code:
-            return None
+            return empty_data
 
         # Check whether we're directed to a listing page or a detail page.
         #   Sometimes adidas search directs to a listing page displaying similar items
@@ -33,7 +42,7 @@ def check_stock(store, code, size):
 
             # If we can't find the product listing, return None.
             if not url or not hasattr(url, "href"):
-                return None
+                return empty_data
 
             # Set the url
             url = url["href"]
@@ -79,7 +88,7 @@ def check_stock(store, code, size):
 
         valid_code = soup.find(name='a', attrs={'class': 'fp-product-thumb-link'})
         if not valid_code:
-            return
+            empty_data
         url = "http://www.footpatrol.co.uk/{}".format(valid_code["href"])
 
         html = requests.get(url, headers=generate_request_header()).content

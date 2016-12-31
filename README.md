@@ -8,8 +8,9 @@ Currently supports footpatrol.co.uk, adidas.co.uk and solebox.com.
 
 ## Prerequisites
  * Python 2.7
+ * [pip](https://pip.pypa.io/en/stable/installing/)
  * ```pip install -r requirements.txt```
- * phantom.js can be found [here](http://phantomjs.org/)
+ * [phantomjs](http://phantomjs.org/) or [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) placed in system path (or System/System32 in windows).
 
 
 ## Usage

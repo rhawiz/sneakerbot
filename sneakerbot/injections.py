@@ -11,7 +11,6 @@ INJECTIONS = {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelectorAll('span[data-val={code}_{size_code}]')[0].click()"],
                 "sleep": 0,
-                # "wait_for": "//div[@class=ffSelectMenuMid]",
             },
             {
                 "selenium_calls": ["execute_script"],
@@ -27,20 +26,17 @@ INJECTIONS = {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelectorAll('a[data-ci-test-id=CheckOutButton]')[0].click()"],
                 "sleep": 0.0,
-                # "wait_for": "//a[data-ci-test-id=CheckOutButton)]"
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelectorAll('button[id=dwfrm_cart_checkoutCart]')[0].click()"],
                 "sleep": 0,
-                # "wait_for": "//button[@id=dwfrm_cart_checkoutCart)]"
 
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_shiptoaddress_shippingAddress_firstName", "{first_name}"],
                 "sleep": 0,
-                # "wait_for": "//*[@id=dwfrm_shipping_shiptoaddress_shippingAddress_firstName)]"
 
             },
             {
@@ -78,7 +74,6 @@ INJECTIONS = {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_adyenencrypted_number", "{card_number}"],
                 "sleep": 0,
-                # "wait_for": "//*[@id=dwfrm_adyenencrypted_number)]"
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
@@ -211,97 +206,128 @@ INJECTIONS = {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"a[data-size-uk=\'{size}\']\").click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//a[@data-size-uk='{size}']")
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('toBasket').click()"],
                 "sleep": 0,
+
             },
             {
-                "selenium_calls": ["execute_script"],
-                "values": ["document.getElementById('miniBasket').click()"],
-                "sleep": 3,
+                "selenium_calls": ["get"],
+                "values": ["https://www.solebox.com/en/cart/"],
+                "sleep": 0,
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"button[class='submitButton largeButton nextStep']\").click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//button[@class='submitButton largeButton nextStep']")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"input[name='lgn_usr']\").value = \"{username}\""],
                 "sleep": 0,
+                "wait_for": ("xpath", "//input[@name='lgn_usr']")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"input[name='lgn_pwd']\").value = \"{password}\""],
                 "sleep": 0,
+                "wait_for": ("xpath", "//input[@name='lgn_pwd']")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"button[class='submitButton checkoutLogin']\").click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//button[@class='submitButton checkoutLogin']")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('userNextStepBottom').click()"],
                 "sleep": 0,
+                "wait_for": ("id", "userNextStepBottom")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('payment_gs_kk_saferpay').click()"],
                 "sleep": 0,
+                "wait_for": ("id", "payment_gs_kk_saferpay")
 
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('paymentNextStepBottom').click()"],
                 "sleep": 0,
+                "wait_for": ("id", "payment_gs_kk_saferpay")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"button[class='submitButton nextStep largeButton']\").click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//button[@class='submitButton nextStep largeButton']")
+
             },
             {
                 "selenium_calls": ["find_element_by_name", 'switch_to.frame'],
                 "values": ["HPiFrame", 'HPiFrame'],
                 "sleep": 0,
+                "wait_for": ("name", "HPiFrame")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"button[class='btn btn-select btn-card-visa']\").click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//button[@class='btn btn-select btn-card-visa']")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('CardNumber').value = '{card_number}'"],
                 "sleep": 0,
+                "wait_for": ("id", "CardNumber")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('ExpMonth').value = '{expire_month}'"],
                 "sleep": 0,
+                "wait_for": ("id", "ExpMonth")
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('ExpYear').value = '{expire_year_full}'"],
                 "sleep": 0,
+                "wait_for": ("id", "ExpYear")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('HolderName').value = '{card_name}'"],
                 "sleep": 0,
+                "wait_for": ("id", "HolderName")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.getElementById('VerificationCode').value = '{cvv}'"],
                 "sleep": 0,
+                "wait_for": ("id", "VerificationCode")
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"button[name='SubmitToNext']\").click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//button[@name='SubmitToNext']")
+
             },
 
         ]
