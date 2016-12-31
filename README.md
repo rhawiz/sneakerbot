@@ -10,7 +10,7 @@
 
 
 ## Usage
-### StockChecker
+### Sneakerbot
  * clone repo with ```git clone https://github.com/rhawiz/sneakerbot.git``` or download through github.
  * ```cd sneakerbot/sneakerbot```
  * ```python sneakerbot.py --config <param>```
