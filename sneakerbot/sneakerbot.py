@@ -156,9 +156,6 @@ class SneakerBot(object):
                         print "\t\t", e
                 sleep(sec_between_attempts)
 
-            if not success:
-                pass
-
             sleep(sleep_duration)
 
         sleep(150)

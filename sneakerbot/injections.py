@@ -204,7 +204,7 @@ INJECTIONS = {
     },
     'solebox': {
         "url": "http://www.solebox.com",
-        "max_attempts": 150,
+        "max_attempts": 10,
         "wait_between_attempts": 0.25,
         "injection": [
             {
