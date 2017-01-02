@@ -1,23 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import ConfigParser
 from time import sleep
 
-import re
-
-import sys
-from win32api import GetSystemMetrics
-
 import click
-from selenium import webdriver
-
-import ConfigParser
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import WebDriverException
 
 from config import Config
 from stockchecker import check_stock
