@@ -31,11 +31,11 @@ Check ```sample.cfg``` for an example of how a sample configuration may look lik
 ###### ```quantity = #``` [required] Quantity of product to cart.
 
 ##### **delivery** - [required] Delivery details
-###### ```first_name = ****``` - [required] First name for delivery
-###### ```last_name  = ****``` - [required] First name for delivery
+###### ```first_name = xxxxx``` - [required] First name for delivery
+###### ```last_name  = xxxxx``` - [required] Last name for delivery
 ###### ```address  = # xxxxx``` - [required] First line of address including number for delivery
 ###### ```city  = xxxxx``` - [required] City for delivery
-###### ```postcode  = xx# #xx``` - [required] Postcode for delivery
+###### ```postcode  = xxx xxx``` - [required] Postcode for delivery
 ###### ```email = xxx@xxx.xx``` - [required] Email for delivery
 ###### ```phone  = #######``` - [required] Phone number for delivery
 

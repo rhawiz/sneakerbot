@@ -128,7 +128,7 @@ class SneakerBot(object):
 
         print "Starting injection...\n"
         if self.CONFIG.debug == False:
-            print "Debug is set to False, not showing basic injection details."
+            print "Debug is set to False, not showing injection information."
         for inj_info in injections:
 
             calls = inj_info.get("selenium_calls")
@@ -143,7 +143,9 @@ class SneakerBot(object):
 
             if wait_for:
                 wait_for_call, wait_for_value = wait_for
+
                 wait_for_value = wait_for_value.format(**params)
+                print wait_for_call, wait_for_value
                 if wait_for_call == 'xpath':
                     WebDriverWait(self.driver, 60).until(
                         expected_conditions.presence_of_element_located((By.XPATH, wait_for_value)))
@@ -158,8 +160,6 @@ class SneakerBot(object):
                         expected_conditions.presence_of_element_located((By.CLASS_NAME, wait_for_value)))
 
             attempt = 0
-            success = False
-
             while attempt < max_attempts:
 
                 try:
@@ -167,7 +167,6 @@ class SneakerBot(object):
                     if self.CONFIG.debug:
                         print "\tInjecting js...attempt {}".format(attempt)
                     self._execute_injection(self.driver, calls, values, params)
-                    success = True
                     break
                 except WebDriverException, e:
                     if self.CONFIG.debug:
@@ -180,7 +179,7 @@ class SneakerBot(object):
 
 
 @click.command()
-@click.option('--config', default='../sample_local.cfg', prompt='Config file path', help='Config file path')
+@click.option('--config', default='../sample.cfg', prompt='Config file path', help='Config file path')
 def main(config):
     c = Config(config)
     bot = SneakerBot(c)

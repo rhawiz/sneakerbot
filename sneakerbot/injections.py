@@ -9,82 +9,109 @@ INJECTIONS = {
         "injection": [
             {
                 "selenium_calls": ["execute_script"],
-                "values": ["document.querySelectorAll('span[data-val={code}_{size_code}]')[0].click()"],
+                "values": ["document.querySelector('span[data-val=\"{code}_{size_code}\"]').click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//span[@data-val=\"{code}_{size_code}\"]")
+
             },
             {
                 "selenium_calls": ["execute_script"],
-                "values": ["document.querySelectorAll('span[data-val=\"{quantity}\"]')[0].click()"],
+                "values": ["document.querySelector('span[data-val=\"{quantity}\"]').click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//span[@data-val=\"{quantity}\"]")
+
             },
             {
                 "selenium_calls": ["execute_script"],
-                "values": ["document.querySelectorAll('button[name=add-to-cart-button]')[0].click()"],
-                "sleep": 0
+                "values": ["document.querySelector('button[name=\"add-to-cart-button\"]').click()"],
+                "sleep": 0,
+                "wait_for": ("xpath", "//button[@name=\"add-to-cart-button\"]")
+
             },
             {
-                "selenium_calls": ["execute_script"],
-                "values": ["document.querySelectorAll('a[data-ci-test-id=CheckOutButton]')[0].click()"],
+                "selenium_calls": ["get"],
+                "values": ["https://www.adidas.co.uk/on/demandware.store/Sites-adidas-GB-Site/en_GB/Cart-Show"],
                 "sleep": 0.0,
+                "wait_for":("xpath","//a[@class=\"minicarttotal minicart-notempty\"]")
             },
             {
                 "selenium_calls": ["execute_script"],
-                "values": ["document.querySelectorAll('button[id=dwfrm_cart_checkoutCart]')[0].click()"],
+                "values": ["document.querySelector('button[name=\"dwfrm_cart_checkoutCart\"]').click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//button[@name=\"dwfrm_cart_checkoutCart\"]")
 
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_shiptoaddress_shippingAddress_firstName", "{first_name}"],
                 "sleep": 0,
+                "wait_for": ("id", "dwfrm_shipping_shiptoaddress_shippingAddress_firstName")
 
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_shiptoaddress_shippingAddress_lastName", "{last_name}"],
-                "sleep": 0
+                "sleep": 0,
+                "wait_for": ("id", "dwfrm_shipping_shiptoaddress_shippingAddress_lastName")
+
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_shiptoaddress_shippingAddress_address1", "{address}"],
-                "sleep": 0
+                "sleep": 0,
+                "wait_for": ("id", "dwfrm_shipping_shiptoaddress_shippingAddress_address1")
+
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_shiptoaddress_shippingAddress_city", "{city}"],
-                "sleep": 0
+                "sleep": 0,
+                "wait_for": ("id", "dwfrm_shipping_shiptoaddress_shippingAddress_city")
+
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_shiptoaddress_shippingAddress_postalCode", "{postcode}"],
-                "sleep": 0
+                "sleep": 0,
+                "wait_for": ("id", "dwfrm_shipping_shiptoaddress_shippingAddress_postalCode")
+
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_shipping_email_emailAddress", "{email}"],
-                "sleep": 0
+                "sleep": 0,
+                "wait_for": ("id", "dwfrm_shipping_email_emailAddress")
+
             },
             {
                 "selenium_calls": ["execute_script"],
-                "values": [
-                    "document.getElementsByClassName('button-primary btn-regular-red co-btn_primary bp-black light-back button-half-width')[0].click()"],
+                "values": ["document.querySelector('button[name=\"dwfrm_shipping_submitshiptoaddress\"]').click()"],
                 "sleep": 1,
+                "wait_for": (
+                    "name", "dwfrm_shipping_submitshiptoaddress")
+
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_adyenencrypted_number", "{card_number}"],
                 "sleep": 0,
+                "wait_for": ("id", "dwfrm_adyenencrypted_number")
+
             },
             {
                 "selenium_calls": ["find_element_by_id", "send_keys"],
                 "values": ["dwfrm_adyenencrypted_cvc", "{cvv}"],
-                "sleep": 0
+                "sleep": 0,
+                "wait_for": ("id", "dwfrm_adyenencrypted_cvc")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": [
                     "document.querySelectorAll('span[data-val=\"{expire_month_full}\"]')[0].click()"],
                 "sleep": 0,
+                "wait_for": ("xpath", "//span[@data-val=\"{expire_month_full}\"]")
+
             },
             {
                 "selenium_calls": [
@@ -94,12 +121,16 @@ INJECTIONS = {
                     "document.querySelectorAll('span[data-val=\"{expire_year_full}\"]')[0].click()"
                 ],
                 "sleep": 0,
+                "wait_for": ("xpath", "//span[@data-val=\"{expire_year_full}\"]")
+
             },
             {
                 "selenium_calls": ["execute_script"],
                 "values": [
                     "document.getElementsByClassName('co-btn_primary btn_showcart button-full-width button-ctn button-brd adi-gradient-blue button-forward')[0].click()"],
                 "sleep": 0,
+                "wait_for": ("class", "co-btn_primary btn_showcart button-full-width button-ctn button-brd adi-gradient-blue button-forward")
+
             },
         ]
     },

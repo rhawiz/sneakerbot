@@ -96,7 +96,7 @@ class Config(object):
             self.url = config.get("products", "url")
 
         self.code = self.url
-        if not self.url:
+        if config.has_option("products", "code"):
             self.code = config.get("products", "code")
 
         self.size = config.get("products", "size")
