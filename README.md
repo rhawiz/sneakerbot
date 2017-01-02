@@ -17,8 +17,9 @@ Currently supports footpatrol.co.uk, adidas.co.uk and solebox.com.
 ### Sneakerbot
  * clone repo with ```git clone https://github.com/rhawiz/sneakerbot.git``` or download through github.
  * ```cd sneakerbot/sneakerbot```
- * ```python sneakerbot.py --config <param>```
-    * **config**: Path to config file (see below)
+ * ```python sneakerbot.py --config <param> --instances <param>```
+    * **config**: Path to config files separated by a list (see below) (e.g. sample1.cfg, sample2.cfg, sample3.cfg)
+    * **instances**: Number of instances to run per config file
 
 #### Configuration Parameters
 Check ```sample.cfg``` for an example of how a sample configuration may look like.

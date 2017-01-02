@@ -3,6 +3,7 @@
 from time import sleep
 
 import click
+from multiprocessing import Process
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,6 +13,7 @@ from selenium.common.exceptions import WebDriverException
 
 from config import Config
 from stockchecker import check_stock
+import platform
 
 
 class SneakerBot(object):
@@ -169,12 +171,23 @@ class SneakerBot(object):
         sleep(150)
 
 
+def worker(config):
+    print "Starting worker..."
+    bot = SneakerBot(config)
+    return bot.run()
+
+
 @click.command()
-@click.option('--config', default='../sample.cfg', prompt='Config file path', help='Config file path')
-def main(config):
-    c = Config(config)
-    bot = SneakerBot(c)
-    bot.run()
+@click.option('--config', default='../sample.cfg, ../sample2.cfg', prompt='Config file path', help='Config file path')
+@click.option('--instances', default=2, prompt='Number of instances to run per config file', help='Number of instances')
+def main(config, instances):
+    config_files = config.split(",")
+    for file in config_files:
+        file = file.strip()
+        for i in range(0, instances):
+            c = Config(file)
+            proc = Process(target=worker, args=(c,))
+            proc.start()
 
 
 if __name__ == '__main__':
