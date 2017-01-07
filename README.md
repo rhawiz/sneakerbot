@@ -79,6 +79,6 @@ Check ```sample.cfg``` for an example of how a sample configuration may look lik
  * adidas bot configuration file readme
  * Add phantom.js / chromedriver binary to project
  * Last test on release didn't go so well - inject request payload to URLs directly without loading content
- * Wait for content to load before injecting the next javascript 
+ * ~~Wait for content to load before injecting the next javascript~~
  * Implement paypal payment
  
