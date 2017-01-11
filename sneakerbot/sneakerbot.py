@@ -152,7 +152,7 @@ def adidas(config):
                      {}, "POST")
 
     # Adidas are annoying and implement security features during checkout so this is essential
-    soup = BeautifulSoup(driver.page_source, "lxml")
+    soup = BeautifulSoup(driver.page_source)
 
     # Get value for shipping security key
     shipping_securekey = soup.find(name="input", attrs={"name": "dwfrm_shipping_securekey"})
