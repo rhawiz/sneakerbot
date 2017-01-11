@@ -2,8 +2,6 @@ import ConfigParser, os
 
 import re
 
-from injections import INJECTIONS
-
 ADIDAS_SIZE_MAPPING = {
     "3.5": "530",
     "4": "540",
@@ -84,7 +82,6 @@ class Config(object):
         self._validate(config)
 
         self.store = config.get("products", "store")
-        self.injection_info = INJECTIONS.get(self.store, None)
 
         if not self.injection_info:
             raise ValueError("Store '{}' not currently supported.".format(self.store))
