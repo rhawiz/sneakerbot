@@ -1,193 +1,131 @@
-# -*- coding: utf-8 -*-
-
+import re
 from time import sleep
 
 import click
 from multiprocessing import Process
-
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
-from selenium.common.exceptions import WebDriverException
 
 from config import Config
-from stockchecker import check_stock
-import platform
 
 
-class SneakerBot(object):
-    def __init__(self, config):
-        self.CONFIG = config
+def selenium_request(driver, path, params, method, debug=False):
+    """
+    To overcome seleniums inability to send post requests. We inject contents of form.js into the html with the
+        required data and call the submit method on that form.
+    """
 
-    def _execute_injection(self, driver, calls, values, params):
-        res = None
-        for i in range(0, len(calls)):
-            value = values[i]
-            if isinstance(value, str) or isinstance(value, unicode):
-                value = value.format(**params)
-            call = calls[i]
-            if self.CONFIG.debug:
-                print "\t\t", call, value
-            if call == 'execute_script':
-                res = driver.execute_script(value)
-            elif call == 'find_element_by_id':
-                res = driver.find_element_by_id(value)
-            elif call == 'send_keys':
-                res.send_keys(value)
-            elif call == 'find_element_by_xpath':
-                res = driver.find_element_by_xpath(value)
-            elif call == 'find_element_by_name':
-                res = driver.find_element_by_name(value)
-            elif call == 'switch_to.frame':
-                driver.switch_to.frame(res)
-            elif call == 'get':
-                driver.get(value)
+    # Read contents of form.js and inject into document head
+    post_js = file("form.js", "rb").read()
+    add_form_injection = "var s=document.createElement('script');\n\
+                                   s.type = 'text/javascript';\n\
+                                   s.innerHTML=\n{}\n;\n\
+                                  document.head.appendChild(s)".format(post_js)
+    if debug:
+        print "Injecting javascript...\n{}".format(add_form_injection)
+    driver.execute_script(add_form_injection)
 
-    def _initialise_driver(self):
-        # Initialise selenium driver
-        driver_name = self.CONFIG.driver
-        if driver_name == 'chrome':
-            self.driver = webdriver.Chrome()
-        elif driver_name == 'phantomjs':
-            self.driver = webdriver.PhantomJS()
-        else:
-            self.driver = webdriver.PhantomJS()
+    payload = "{"
 
-    def run(self):
-        print "Initialising driver...\n"
-        url = None
+    for key, value in params.iteritems():
+        if not isinstance(value, int) or not isinstance(value, float):
+            value = "'{}'".format(value)
+        payload += "'{}':{},".format(key, value)
 
-        if not self.CONFIG.bypass_stock_check:
-            print "Finding product information...\n"
+    payload = "{}}}".format(payload[:-1])
 
-            stock_info = check_stock(self.CONFIG.store, self.CONFIG.code, self.CONFIG.size)
+    call_request_injection = "HTMLFormElement.prototype.submit.call(post('{}', {}, '{}'))".format(path, payload, method)
 
-            if not stock_info:
-                print "Could not find product matching code '{}' for store '{}'. Make sure the product code is correct!".format(
-                    self.CONFIG.code, self.CONFIG.store)
+    driver.execute_script(call_request_injection)
 
-            url = stock_info.get("url")
-            max_order = int(stock_info.get("max_order"))
+    return driver
 
-            qty_available = int(stock_info.get("qty_available"))
-            product_name = stock_info.get("name")
-            print "Product information:"
-            print "\tURL: {}\n\tName: {}\n\tSize: {}\n\tAvailable Quantity: {}\n\tMaximum Order: {}\n".format(
-                url,
-                product_name,
-                self.CONFIG.size,
-                qty_available,
-                max_order
-            )
 
-            # Ensure stock is available before attempting to inject script. End program if unavailable.
-            print "Checking stock levels...\n"
-            if qty_available == 0:
-                print "Product '{}' in size '{}' is unavailable...\nEnding script...".format(self.CONFIG.code,
-                                                                                             self.CONFIG.size)
-                return
-            max_quantity = qty_available
-            if qty_available > max_order:
-                max_quantity = max_order
-            if int(self.CONFIG.quantity) > int(max_quantity) + 1:
-                print "Cannot purchase {} units of {}({}). Setting purchase to max order limit of {}.".format(
-                    self.CONFIG.quantity, product_name, self.CONFIG.code, max_quantity)
-                self.CONFIG.update_quantity(max_quantity)
-            else:
-                print "Quantity OK.\n"
-        else:
-            print "bypass_stock_check set to False. Bypassing stock levels may throw an error if size and quantity not available or if quantity is set to more than the maximum order limit. It's recommended you set this to true\n"
-            if not self.CONFIG.url:
-                stock_info = check_stock(self.CONFIG.store, self.CONFIG.code, self.CONFIG.size)
-                url = stock_info.get("url")
+def footpatrol(config):
+    print "Buying from footpatrol.co.uk."
+    options1 = webdriver.ChromeOptions()
+    options1.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
+    driver = webdriver.Chrome(chrome_options=options1)  # service_args=["--verbose", "--log-path=C:\\Users\\rawan\\PycharmProjects\\sneakerbot\\bin\\chromedriverxx.log"]
+    driver.desired_capabilities = options1.to_capabilities()
 
-            else:
-                url = self.CONFIG.url
-        # Get list of javascript injection_info to call
-        injections = self.CONFIG.injection_info.get("injection")
-        max_attempts = self.CONFIG.injection_info.get("max_attempts")
 
-        sec_between_attempts = self.CONFIG.injection_info.get("wait_between_attempts")
+    # Create product payload and send add to basket request
+    basket_payload = {
+        "attributes[2]": config.size_code,
+        "product_quantity": 1,
+        "submit": '',
+        "product_id": config.code,
+        "show_image_variations": 0,
+        "product_thumbnails_pagination": 10,
+    }
 
-        # Get injection parameters
-        params = self.CONFIG.injection_params
+    selenium_request(driver, "http://www.footpatrol.co.uk/basket", basket_payload, "POST")
 
-        self._initialise_driver()
-        if not url:
-            url = self.CONFIG.code
+    checkout_payload = {
+        "shipping_country": "82",
+        "invoice_postcode": config.postcode,
+        "invoice_title": "Mr",
+        "invoice_firstname": config.first_name,
+        "invoice_lastname": config.last_name,
+        "invoice_address_1": config.address,
+        "invoice_address_2": "",
+        "invoice_town": config.city,
+        "invoice_country": "82",
+        "invoice_phonenumber": config.phone,
+        "invoice_email_address": config.email,
+        "shiptowhere": "bill",
+        "delivery_postcode": "",
+        "delivery_firstname": "",
+        "delivery_lastname": "",
+        "delivery_address_1": "",
+        "delivery_address_2": "",
+        "delivery_town": "",
+        "delivery_country": 82,
+        "delivery_option": 46,
+        "payment_type": "credit_card",
+        "submit_order": "true",
+    }
 
-        self.driver.get(url)
+    selenium_request(driver, "https://www.footpatrol.co.uk/checkout", checkout_payload, "POST")
 
-        print "Starting injection...\n"
-        if self.CONFIG.debug == False:
-            print "Debug is set to False, not showing injection information."
-        for inj_info in injections:
+    # Retrieve session ID for secure checkout
+    hps_session_id = re.findall("HPS_SessionID=[a-zA-Z0-9\-]+", driver.page_source)
+    if hps_session_id:
+        hps_session_id = hps_session_id[0][len("HPS_SessionID="):]
 
-            calls = inj_info.get("selenium_calls")
+    # Create payment payload
+    payment_payload = {
+        "card_number": config.card_no,
+        "exp_month": config.expire_month_full,
+        "exp_year": config.expire_year_full,
+        "cv2_number": config.cvv,
+        "issue_number": "",
+        "HPS_SessionID": hps_session_id,
+        "action": "confirm",
+        "continue": "Place Order & Pay",
+    }
 
-            values = inj_info.get("values")
+    selenium_request(driver, "https://hps.datacash.com/hps/?", payment_payload, "POST")
 
-            assert len(calls) == len(values)
-
-            sleep_duration = inj_info.get("sleep")
-
-            wait_for = inj_info.get("wait_for", None)
-
-            if wait_for:
-                wait_for_call, wait_for_value = wait_for
-
-                wait_for_value = wait_for_value.format(**params)
-                print wait_for_call, wait_for_value
-                if wait_for_call == 'xpath':
-                    WebDriverWait(self.driver, 60).until(
-                        expected_conditions.presence_of_element_located((By.XPATH, wait_for_value)))
-                elif wait_for_call == 'id':
-                    WebDriverWait(self.driver, 60).until(
-                        expected_conditions.presence_of_element_located((By.ID, wait_for_value)))
-                elif wait_for_call == 'name':
-                    WebDriverWait(self.driver, 60).until(
-                        expected_conditions.presence_of_element_located((By.NAME, wait_for_value)))
-                elif wait_for_call == 'class':
-                    WebDriverWait(self.driver, 60).until(
-                        expected_conditions.presence_of_element_located((By.CLASS_NAME, wait_for_value)))
-
-            attempt = 0
-            while attempt < max_attempts:
-
-                try:
-                    attempt += 1
-                    if self.CONFIG.debug:
-                        print "\tInjecting js...attempt {}".format(attempt)
-                    self._execute_injection(self.driver, calls, values, params)
-                    break
-                except WebDriverException, e:
-                    if self.CONFIG.debug:
-                        print "\t\t", e
-                sleep(sec_between_attempts)
-
-            sleep(sleep_duration)
-
-        sleep(150)
+    sleep(1000)
 
 
 def worker(config):
-    print "Starting worker..."
-    bot = SneakerBot(config)
-    return bot.run()
+    print "Starting worker thread..."
+    if config.store == 'footpatrol':
+        footpatrol(config)
 
 
 @click.command()
-@click.option('--config', default='../sample.cfg, ../sample2.cfg', prompt='Config file path', help='Config file path')
-@click.option('--instances', default=2, prompt='Number of instances to run per config file', help='Number of instances')
+@click.option('--config', default='../sample.cfg', prompt='Config file path', help='Config file path')
+@click.option('--instances', default=1, prompt='Number of instances to run per config file', help='Number of instances')
 def main(config, instances):
     config_files = config.split(",")
     for file in config_files:
         file = file.strip()
         for i in range(0, instances):
             c = Config(file)
-            proc = Process(target=worker, args=(c,))
-            proc.start()
+            p = Process(target=worker, args=(c,))
+            p.start()
 
 
 if __name__ == '__main__':

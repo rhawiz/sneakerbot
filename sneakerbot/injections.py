@@ -129,12 +129,107 @@ INJECTIONS = {
                 "values": [
                     "document.getElementsByClassName('co-btn_primary btn_showcart button-full-width button-ctn button-brd adi-gradient-blue button-forward')[0].click()"],
                 "sleep": 0,
-                "wait_for": ("class", "co-btn_primary btn_showcart button-full-width button-ctn button-brd adi-gradient-blue button-forward")
+                "wait_for": ("class", "co-btn_primary btn_showcart button-full-width button-ctn button-brd adi-gradient-blue button-forward"),
+                "mode":"full"
 
             },
         ]
     },
     'footpatrol': {
+        "url": "http://www.footpatrol.co.uk",
+        "max_attempts": 10,
+        "wait_between_attempts": 0.25,
+        "injection": [
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.querySelectorAll('a[href=\"{size_code}\"]')[0].click()"],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"add-to-basket\").click()"],
+                "sleep": 1,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.querySelector('input[value=\"Secure Checkout\"]').click()"],
+                "sleep": 1,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_postcode\").value = \"{postcode}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_firstname\").value = \"{first_name}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_lastname\").value = \"{last_name}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_address_1\").value = \"{address}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_town\").value = \"{city}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_phonenumber\").value = \"{phone}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"invoice_email_address\").value = \"{email}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"checkout-button\").click()"],
+                "sleep": 2,
+            },
+            {
+                "selenium_calls": ["find_element_by_id", 'switch_to.frame'],
+                "values": ["datacash_hcc_frame", 'datacash_hcc_frame'],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["find_element_by_name", "send_keys"],
+                "values": ["card_number", "{card_number}"],
+                "sleep": 0
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.querySelector('option[value=\"{expire_month_full}\"]').selected = true"],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.querySelector('option[value=\"{expire_year_full}\"]').selected = true"],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.querySelector('input[name=\"cv2_number\"]').value = \"{cvv}\""],
+                "sleep": 0,
+            },
+            {
+                "selenium_calls": ["execute_script"],
+                "values": ["document.getElementById(\"continue\").click()"],
+                "sleep": 0,
+            }
+
+        ]
+
+    },
+    'footpatrol2': {
         "url": "http://www.footpatrol.co.uk",
         "max_attempts": 10,
         "wait_between_attempts": 0.25,
@@ -357,7 +452,7 @@ INJECTIONS = {
                 "selenium_calls": ["execute_script"],
                 "values": ["document.querySelector(\"button[name='SubmitToNext']\").click()"],
                 "sleep": 0,
-                "wait_for": ("xpath", "//button[@name='SubmitToNext']")
+                "wait_for": ("xpath", "//button[@name='SubmitToNext']"),
 
             },
 

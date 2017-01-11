@@ -1,16 +1,20 @@
 
 # SneakerBot#
-alpha 0.1
+alpha 0.2
+
+## Changes
+
+ * Directly send data into requests without interacting with page elements
 
 **Automatically purchase trainers from online stores**
 
-Currently supports footpatrol.co.uk, adidas.co.uk and solebox.com.
+Currently supports footpatrol.co.uk
 
 ## Prerequisites
  * Python 2.7
  * [pip](https://pip.pypa.io/en/stable/installing/)
  * ```pip install -r requirements.txt```
- * [phantomjs](http://phantomjs.org/) or [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) placed in system path (or System/System32 in windows).
+ * [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) placed in system path (or System/System32 in windows).
 
 
 ## Usage
