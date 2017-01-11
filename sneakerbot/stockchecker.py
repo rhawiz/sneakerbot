@@ -176,11 +176,11 @@ def tabulate_data(content):
         return tabulate(data, headers=headers)
 
 
-#
-# @click.command()
-# @click.option('--store', prompt='Product store', help='Product store. e.g. adidas, footpatrol')
-# @click.option('--codes', prompt='Product codes (e.g. BB4314,S80682)', help='Product codes')
-# @click.option('--sizes', prompt='Size (e.g. 6.5,8,9.0)', help='Trainer sizes')
+
+@click.command()
+@click.option('--store', prompt='Product store', help='Product store. e.g. adidas, footpatrol')
+@click.option('--codes', prompt='Product codes (e.g. BB4314,S80682)', help='Product codes')
+@click.option('--sizes', prompt='Size (e.g. 6.5,8,9.0)', help='Trainer sizes')
 def main(store="solebox", codes="https://www.solebox.com/en/Footwear/Running/NMD-XR1-PK.html", sizes="6.5"):
     data = []
     for code in codes.split(","):
