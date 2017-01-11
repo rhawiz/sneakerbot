@@ -56,7 +56,7 @@ Check ```sample.cfg``` for an example of how a sample configuration may look lik
 
 ##### **settings**
 ###### ```bypass_stock_check = True | False``` - [optional] Defaults to False. Set this to true if too much traffic on website. It will bypass the process of checking whether the product is in stock.
-###### ```driver = chrome | phantomjs``` - [required] Defaults to chrome. If set to chrome process of buying products will be displayed. If set to phantomjs process will be run in the background. Must set to chrome if the process has some sort of captcha system inorder to manually input.
+###### ```driver = chrome``` - [optional] Defaults to chrome. If set to chrome process of buying products will be displayed. If set to phantomjs process will be run in the background. Must set to chrome if the process has some sort of captcha system inorder to manually input.
 ###### ```debug = True | False``` - [required] - Log process information for debugging purposes.
 
 

@@ -83,11 +83,6 @@ class Config(object):
 
         self.store = config.get("products", "store")
 
-        if not self.injection_info:
-            raise ValueError("Store '{}' not currently supported.".format(self.store))
-
-        self.injections = self.injection_info.get("injection")
-
         self.url = None
         if config.has_option("products", "url"):
             self.url = config.get("products", "url")
