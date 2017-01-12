@@ -96,7 +96,7 @@ def footpatrol(config):
     selenium_request(driver, "https://www.footpatrol.co.uk/checkout", checkout_payload, "POST")
 
     # Retrieve session ID for secure checkout
-    hps_session_id = re.findall("HPS_SessionID=[a-zA-Z0-9\-]+", driver.page_source)
+    hps_session_id = re.findall(r"HPS_SessionID=[a-zA-Z0-9\-]+", driver.page_source)
     if hps_session_id:
         hps_session_id = hps_session_id[0][len("HPS_SessionID="):]
 
@@ -174,10 +174,8 @@ def adidas(config):
         "dwfrm_shipping_shiptoaddress_shippingDetails_selectedShippingSubOption_[a-zA-Z0-9]+", driver.page_source)
 
     # Get value for shipping security key
-    shipping_suboptionkey = soup.find(name="input", attrs={
-        "name": shipping_suboption_name})["value"]
-    shipping_optionkey = soup.find(name="input", attrs={
-        "name": shipping_option_name})["value"]
+    shipping_suboptionkey = soup.find(name="input", attrs={"name": shipping_suboption_name})["value"]
+    shipping_optionkey = soup.find(name="input", attrs={"name": shipping_option_name})["value"]
 
     delivery_payload = {
         "dwfrm_shipping_securekey": shipping_securekey,
@@ -228,7 +226,7 @@ def adidas(config):
     WebDriverWait(driver, 60).until(expected_conditions.presence_of_element_located((By.ID,
                                                                                      "dwfrm_adyenencrypted_number")))
 
-    # Input payment method as if a user would (i.e. by entering in each field manually) due to adidas using adyen encryption
+    # Input payment method as a user would (i.e. by entering each field manually) due to adidas using adyen encryption
     driver.find_element_by_id("dwfrm_adyenencrypted_number").send_keys(config.card_no)
     driver.find_element_by_id("dwfrm_adyenencrypted_cvc").send_keys(config.cvv)
     driver.execute_script(

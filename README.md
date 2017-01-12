@@ -5,10 +5,11 @@ alpha 0.2
 ## Changes
 
  * Directly send data into requests without interacting with page elements
+ * Token generation for adidas.co.uk
 
 **Automatically purchase trainers from online stores**
 
-Currently supports footpatrol.co.uk
+Currently supports footpatrol.co.uk and adidas.co.uk
 
 ## Prerequisites
  * Python 2.7
@@ -80,9 +81,22 @@ Check ```sample.cfg``` for an example of how a sample configuration may look lik
     * **sizes**: product colour alone or separated by comma (e.g. 12,7.5,13,6)
 
 ##Todo
- * adidas bot configuration file readme
- * Add phantom.js / chromedriver binary to project
- * Last test on release didn't go so well - inject request payload to URLs directly without loading content
+ * ~~adidas bot configuration file readme~~
+ * ~~Last test on release didn't go so well - inject request payload to URLs directly without loading content~~
  * ~~Wait for content to load before injecting the next javascript~~
+ * Add phantom.js / chromedriver binary to project and link in code
+ * Simplify config input 
  * Implement paypal payment
+ * Stores:
+    * ~~adidas.co.uk~~
+    * ~~footpatrol.co.uk~~
+    * solebox.com
+    * offspring.co.uk
+    * slamjamsocialism.com
+    * size.co.uk
+    * sneakersnstuff.com
+    * thegoodwillout.com
+    * asphaltgold.de
+    * inflammable.com
+    * mate-store.com
  

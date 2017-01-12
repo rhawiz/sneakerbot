@@ -37,15 +37,16 @@ def get_adidas_captcha_token():
     if captcha_element:
         captcha_element.click()
 
-    # Wait until the recaptcha problem is solved before we continue
+    # Wait until recaptcha is solved before we continue
     while captcha_element.get_attribute("aria-checked") == "false":
         sleep(1)
 
     driver.switch_to.parent_frame()
 
+
     WebDriverWait(driver, 60).until(
         expected_conditions.presence_of_element_located((By.XPATH, "//iframe[@title='recaptcha challenge']")))
-
+    #
     captcha_challenge_iframe = driver.find_element_by_xpath("//iframe[@title='recaptcha challenge']")
     driver.switch_to.frame(captcha_challenge_iframe)
 
@@ -53,6 +54,7 @@ def get_adidas_captcha_token():
 
     if captcha_element:
         captcha_value = captcha_element.get_attribute("value")
+        driver.close()
         return captcha_value
 
     driver.close()
