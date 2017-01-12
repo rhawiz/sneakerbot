@@ -1,9 +1,8 @@
 import re
+from multiprocessing import Process
 from time import sleep
 
 import click
-from multiprocessing import Process
-
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -11,38 +10,33 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from config import Config
+from harvester import get_adidas_captcha_token
 
 
-def selenium_request(driver, path, params, method, debug=True):
+def selenium_request(driver, path, params, method):
     """
     To overcome seleniums inability to send post requests. We inject contents of form.js into the html with the
         required data and call the submit method on that form.
     """
 
     # Read contents of form.js and inject into document head
-    post_js = file("form.js", "rb").read()
-    add_form_injection = "var s=document.createElement('script');\n\
-                                   s.type = 'text/javascript';\n\
-                                   s.innerHTML=\n{}\n;\n\
-                                  document.head.appendChild(s)".format(post_js)
+    post_js = file("templates/request.js", "rb").read()
 
-    driver.execute_script(add_form_injection)
+    driver.execute_script(post_js)
 
-    payload = "{"
+    payload = "{}"
+    if params.keys():
+        payload = "{"
 
-    for key, value in params.iteritems():
-        if not isinstance(value, int) or not isinstance(value, float):
-            value = "'{}'".format(value)
-        payload += "'{}':{},".format(key, value)
+        for key, value in params.iteritems():
+            if not isinstance(value, int) or not isinstance(value, float):
+                value = "'{}'".format(value)
+            payload += "'{}':{},".format(key, value)
 
-    payload = "{}}}".format(payload[:-1])
-
-    if not params.keys():
-        payload = "{}"
+        payload = "{}}}".format(payload[:-1])
 
     call_request_injection = "HTMLFormElement.prototype.submit.call(post('{}', {}, '{}'))".format(path, payload, method)
-    if debug:
-        print "Injecting javascript...\n\t{}".format(call_request_injection)
+
     driver.execute_script(call_request_injection)
 
     return driver
@@ -129,24 +123,36 @@ def adidas(config):
 
     print "Buying product {} from adidas.co.uk".format(config.code)
 
-    # Initialise driver
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(chrome_options=options)
+    print "Checking for captcha..."
 
+    captcha_value = None
+    while not captcha_value:
+        captcha_value = get_adidas_captcha_token()
+
+    # captcha_value = get_token()
     # Create product payload and send add to basket request
     basket_payload = {
         "layer": "Add To Bag overlay",
         "pid": "{}_{}".format(config.code, config.size_code),
         "Quantity": 1,
-        "recipe": "",
+        "g-recaptcha-response": captcha_value,
         "masterPid": config.code,
         "sessionSelectedStoreID": "null",
         "ajax": "true",
     }
 
+    # Initialise driver
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(chrome_options=options)
+    # driver.get(config.url)
+
     selenium_request(driver,
                      "http://www.adidas.co.uk/on/demandware.store/Sites-adidas-GB-Site/en_GB/Cart-MiniAddProduct",
                      basket_payload, "POST")
+
+    # driver.switch_to.parent_frame()
+    #
+    # driver.find_element_by_name("add-to-cart-button").click()
 
     selenium_request(driver, "https://www.adidas.co.uk/on/demandware.store/Sites-adidas-GB-Site/en_GB/CODelivery-Start",
                      {}, "POST")

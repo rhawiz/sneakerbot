@@ -21,3 +21,9 @@ function post(path, params, method) {
     //form.submit();
     return form
 }
+
+var s=document.createElement('script');
+
+s.type = 'text/javascript';
+s.innerHTML=post;
+document.head.appendChild(s);
