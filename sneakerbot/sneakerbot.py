@@ -5,7 +5,9 @@ from time import sleep
 import click
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -121,15 +123,17 @@ def adidas(config):
     if not isinstance(config, Config):
         return
 
-    print "Buying product {} from adidas.co.uk".format(config.code)
+    print "Buying product {} from adidas.co.uk\n".format(config.code)
 
-    print "Checking for captcha..."
+    print "Retrieving captcha code...\n"
 
     captcha_value = None
     while not captcha_value:
         captcha_value = get_adidas_captcha_token()
 
     # captcha_value = get_token()
+    print "Building cart payload...\n"
+
     # Create product payload and send add to basket request
     basket_payload = {
         "layer": "Add To Bag overlay",
@@ -137,28 +141,30 @@ def adidas(config):
         "Quantity": 1,
         "g-recaptcha-response": captcha_value,
         "masterPid": config.code,
+        'responseformat': 'json',
         "sessionSelectedStoreID": "null",
         "ajax": "true",
     }
 
     # Initialise driver
     options = webdriver.ChromeOptions()
+    options.add_argument("--app=file:///")
+    options.add_argument("--no-startup-window")
+    # options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
     driver = webdriver.Chrome(chrome_options=options)
     # driver.get(config.url)
 
+    print "Attempting to cart product...\n"
     selenium_request(driver,
                      "http://www.adidas.co.uk/on/demandware.store/Sites-adidas-GB-Site/en_GB/Cart-MiniAddProduct",
                      basket_payload, "POST")
 
-    # driver.switch_to.parent_frame()
-    #
-    # driver.find_element_by_name("add-to-cart-button").click()
-
+    print "Sending shipping information...\n"
     selenium_request(driver, "https://www.adidas.co.uk/on/demandware.store/Sites-adidas-GB-Site/en_GB/CODelivery-Start",
                      {}, "POST")
 
     # Adidas are annoying and implement security features during checkout so this is essential
-    soup = BeautifulSoup(driver.page_source)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
 
     # Get value for shipping security key
     shipping_securekey = soup.find(name="input", attrs={"name": "dwfrm_shipping_securekey"})
@@ -166,6 +172,10 @@ def adidas(config):
     if not shipping_securekey:
         print "Unable to purchase product, are you sure available in size {}?".format(config.size)
         return
+
+    print "Successfully added product to cart...\n"
+
+    print "Building payment payload...\n"
     shipping_securekey = shipping_securekey["value"]
     # Find the name for shipping sub option and option as it changes for every session
     shipping_suboption_name = re.findall(
@@ -215,7 +225,7 @@ def adidas(config):
         "dwfrm_shipping_shiptopudo_search_country_d0goerjreoyc": "GB",
         "dwfrm_shipping_shiptopudo_search_maxdistance_d0daqpwdwjkh": "10",
         "dwfrm_shipping_shiptopudo_shippingDetails_selectedShippingMethod_d0crknozfrst": "",
-        "dwfrm_shipping_shiptopudo_shippingDetails_pudoId_d0dntxsyxumh": ""
+        "dwfrm_shipping_shiptopudo_shippingDetails_pudoId_d0dntxsyxumh": "",
     }
 
     selenium_request(driver,
@@ -234,8 +244,23 @@ def adidas(config):
     driver.execute_script(
         "document.querySelectorAll('span[data-val=\"{}\"]')[0].click()".format(config.expire_year_full))
 
+    print "Attempting to make purchase...\n"
+
     driver.execute_script(
         "document.getElementsByClassName('co-btn_primary btn_showcart button-full-width button-ctn button-brd adi-gradient-blue button-forward')[0].click()")
+
+    payment_success = BeautifulSoup(driver.page_source, "html.parser").find(name="div", attrs={
+        "class": "alert-box ab-warning"}) == None
+
+    if payment_success:
+        print "Payment success\n"
+    else:
+        print "Payment failed\n"
+
+    print "Ending."
+
+    if not config.keep_window_open:
+        driver.close()
 
 
 def worker(config):

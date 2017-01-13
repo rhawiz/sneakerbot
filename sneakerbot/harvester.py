@@ -17,8 +17,11 @@ def get_adidas_captcha_token():
     """
 
     # Preload adidas.co.uk as the recaptcha sitekey is registered to this domain and is required to generate a valid token
-    driver = webdriver.Chrome()
-    driver.get("https://www.adidas.co.uk")
+    options = webdriver.ChromeOptions()
+    options.add_argument("--app=https://adidas.co.uk/on/demandware.store/")
+    driver = webdriver.Chrome(chrome_options=options)
+
+   # driver.get("https://www.adidas.co.uk/on/demandware.store/")
 
     # Get recaptcha injection script and execute it
     captcha_injection = file("templates/adidas_recaptcha.js").read()
@@ -46,10 +49,11 @@ def get_adidas_captcha_token():
 
     WebDriverWait(driver, 60).until(
         expected_conditions.presence_of_element_located((By.XPATH, "//iframe[@title='recaptcha challenge']")))
-    #
+
     captcha_challenge_iframe = driver.find_element_by_xpath("//iframe[@title='recaptcha challenge']")
     driver.switch_to.frame(captcha_challenge_iframe)
 
+    # Find element that contains the recatcha token and return
     captcha_element = driver.find_element_by_id("recaptcha-token")
 
     if captcha_element:

@@ -1,6 +1,7 @@
 
 document.body.innerHTML = ""
-
+document.title = "Recaptcha Harvest (fuck you adidas)"
+document.body.style.height = window.innerHeight + 'px';
 function onloadCallback(){
   grecaptcha.render('html_element', {
     'sitekey' : '6LeOnCkTAAAAAK72JqRneJQ2V7GvQvvgzsVr-6kR'
@@ -20,12 +21,7 @@ form.setAttribute("action", "?");
 var div = document.createElement("div");
 div.setAttribute("id","html_element");
 
-var input = document.createElement("input");
-input.setAttribute("type","submit");
-input.setAttribute("value","Submit");
-
 form.appendChild(div);
-form.appendChild(input);
 
 document.body.appendChild(form);
 

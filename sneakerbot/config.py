@@ -156,6 +156,12 @@ class Config(object):
 
                 self.bypass_stock_check = True if self.bypass_stock_check == 'True' else False
 
+            self.keep_window_open = True
+            if config.has_option("settings", "keep_window_open"):
+                self.keep_window_open = config.get("settings", "bypass_stock_check")
+
+                self.keep_window_open = True if self.keep_window_open == 'True' else False
+
         # Create dictionary of parameters to be passed into the injection script
         self.injection_params = {
             "store": self.store,
