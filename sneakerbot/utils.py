@@ -102,36 +102,6 @@ def is_url(url):
     return True if match else None
 
 
-class Format:
-    RESET = '\033[0m'
-    BOLD = '\033[01m'
-    DISABLE = '\033[02m'
-    UNDERLINE = '\033[04m'
-    REVERSE = '\033[07m'
-    INVISIBLE = '\033[08m'
-    BLACK = '\033[30m'
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    ORANGE = '\033[33m'
-    BLUE = '\033[34m'
-    PURPLE = '\033[35m'
-    CYAN = '\033[36m'
-    LIGHT_GREY = '\033[37m'
-    DARK_GREY = '\033[90m'
-    LIGHT_RED = '\033[91m'
-    LIGHT_GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    LIGHT_BLUE = '\033[94m'
-    PINK = '\033[95m'
-    LIGHT_CYAN = '\033[96m'
-
-
-def _format(string, format):
-    format_code = format
-    if format.find('\033') == -1:
-        format_code = getattr(Format, format, '')
-    return '{0}{1}{2}'.format(format_code, string, Format.RESET)
-
 
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_len=100, colour=None):
     """Call in a loop to create terminal progress bar
@@ -170,68 +140,6 @@ Network Utils
 
 """
 
-BASE_REQUEST_HEADER = {
-    'ACCEPT_LANGUAGE': 'en-GB,en;q=0.8,en-US;q=0.6'
-}
-
-HTTP_PROXIES = [
-    '88.159.152.98:80',
-    '88.159.152.98:80',
-    '83.128.190.244:80',
-    '80.57.110.15:80',
-    '92.109.93.49:80',
-    '84.195.104.126:80',
-    '213.136.79.122:80',
-    '78.23.240.168:80',
-    '91.183.124.41:80',
-    '81.30.69.3:80',
-    '77.174.184.148:80',
-    '62.181.8.120:80',
-    '80.112.143.63:80',
-    '82.204.105.220:80',
-    '46.231.117.154:80',
-    '93.72.105.188:8090',
-    '86.14.249.58:80',
-    '188.214.23.47:80',
-    '188.214.23.104:80',
-    '188.214.23.59:80',
-    '82.165.151.230:80',
-    '94.23.158.49:80',
-    '95.215.52.150:8080',
-    '188.214.23.115:80',
-    '85.114.54.87:80',
-    '37.187.60.61:80',
-    '92.222.237.9:8888',
-    '213.136.79.124:80',
-    '37.187.7.213:8118',
-    '78.129.146.9:8118',
-    '195.40.6.43:8080',
-    '85.216.41.254:80',
-]
-
-HTTPS_PROXIES = [
-    '178.32.87.230:3128',
-    '137.135.166.225:8146',
-    '46.162.195.42:3128',
-    '94.100.63.2:8080',
-    '62.23.106.13:80',
-    '188.213.170.107:80',
-    '80.96.203.117:9999',
-    '51.255.161.222:80',
-    '217.130.250.107:80',
-    '185.50.215.116:8080',
-    '195.3.113.170:8080',
-    '195.3.113.170:3128',
-    '31.173.74.73:8080',
-    '149.202.249.227:3128',
-    '89.249.207.65:3128',
-    '51.254.103.206:3128',
-    '37.187.253.39:8172',
-    '128.199.129.179:3128',
-    '176.31.239.33:8121',
-
-]
-
 """
 List of various browser User-Agent headers
 """
@@ -251,6 +159,13 @@ USER_AGENT_HEADER_LIST = [
     "Mozilla/4.0 (Compatible; MSIE 8.0; Windows NT 5.2; Trident/6.0)",
     "Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)",
     "Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)",
+
+    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36",
+
+    # Chrome 41.0.2227.1
+
 
     # Chrome 41.0.2228.0
     "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
@@ -292,17 +207,136 @@ USER_AGENT_HEADER_LIST = [
 
 ]
 
+BASE_REQUEST_HEADER = {
+    'Accept-Language': 'en-GB,en;q=0.8,en-US;q=0.6',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Upgrade-Insecure-Requests': '1',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'max-age=0',
+}
 
-def generate_proxy_dict():
-    proxy_dict = {
-        'http': HTTP_PROXIES[random.randint(0, len(HTTP_PROXIES) - 1)],
-        'https': HTTPS_PROXIES[random.randint(0, len(HTTPS_PROXIES) - 1)],
-    }
+PROXY_PORTS = [
+    "1080",
+    "1085",
+    "1090"
+]
 
-    return proxy_dict
+PROXY_USERNAME = "user4344221"
+PROXY_PASSWORD = "IBJbGIFF"
 
+PROXY_IPS = [
+    'proxy.torguard.org'
+    'proxy.torguard.io'
+    "46.166.137.66",
+    "46.166.137.67",
+    "46.166.137.68",
+    "46.166.137.69",
+    "46.166.137.70",
+    "46.166.137.71",
+    "46.166.137.72",
+    "46.166.137.73",
+    "46.166.137.74",
+    "199.19.94.93",
+    "199.19.94.126",
+    "199.19.94.41",
+    "199.19.94.24",
+    "199.21.149.101",
+    "199.21.149.141",
+    "199.21.149.94",
+    "199.21.149.90",
+    "199.21.149.61",
+    "184.75.220.26",
+    "184.75.220.186",
+    "184.75.220.178",
+    "184.75.220.170",
+    "184.75.215.26",
+    "184.75.209.250",
+    "184.75.220.122",
+    "184.75.220.34",
+    "184.75.220.42",
+    "184.75.215.34",
+    "184.75.220.50",
+    "184.75.221.138",
+    "184.75.210.138",
+    "184.75.221.146",
+    "184.75.221.154",
+    "184.75.208.74",
+    "162.219.179.138",
+    "162.219.179.146",
+    "162.219.179.154",
+    "162.219.178.10",
+    "162.219.178.34",
+    "162.219.178.18",
+    "162.219.178.26",
+    "184.75.215.58",
+    "184.75.215.178",
+    "162.219.178.146",
+    "162.253.128.18",
+    "162.253.128.26",
+    "162.253.128.34",
+    "162.253.128.42",
+    "184.75.209.90",
+    "162.219.178.218",
+    "184.75.220.114",
+    "184.75.220.138",
+    "184.75.220.226",
+    "184.75.220.82",
+    "184.75.220.106",
+    "184.75.220.146",
+    "184.75.220.154",
+    "184.75.220.202",
+    "184.75.220.210",
+    "173.44.37.114",
+    "173.44.37.90",
+    "173.44.37.98",
+    "173.44.37.82",
+    "173.44.37.106",
+    "96.44.144.114",
+    "96.44.144.122",
+    "96.44.147.42",
+    "96.44.147.106",
+    "96.44.148.66",
+    "96.44.189.114",
+    "173.254.222.178",
+    "173.254.222.170",
+    "173.254.222.162",
+    "173.254.222.154",
+    "173.254.222.146",
+    "46.246.124.91",
+    "46.246.124.42",
+    "46.246.124.92",
+    "46.246.124.20",
+    "46.246.124.4",
+    "46.246.124.44",
+
+]
+
+
+def generate_proxy():
+    port = random.choice(PROXY_PORTS)
+    ip = random.choice(PROXY_IPS)
+    proxy = "socks5://{username}:{password}@{ip}:{port}".format(
+        username=PROXY_USERNAME,
+        password=PROXY_PASSWORD,
+        ip=ip,
+        port=port,
+    )
+
+    return dict(http=proxy, https=proxy)
+
+def generate_selenium_proxy():
+    port = random.choice(PROXY_PORTS)
+    ip = random.choice(PROXY_IPS)
+    proxy = "{}:{}".format(ip, port)
+
+    service_args = [
+        "--proxy={}".format(proxy),
+        "--proxy-type=socks5",
+        "--proxy-auth={}:{}".format(PROXY_USERNAME, PROXY_PASSWORD),
+    ]
+    return service_args
 
 def generate_request_header():
     header = BASE_REQUEST_HEADER
-    header["User-Agent"] = USER_AGENT_HEADER_LIST[random.randint(0, len(USER_AGENT_HEADER_LIST) - 1)]
+    header["User-Agent"] = random.choice(USER_AGENT_HEADER_LIST)
     return header

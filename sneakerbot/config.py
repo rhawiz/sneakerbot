@@ -51,6 +51,56 @@ FOOTPATROL_SIZE_MAPPING = {
     "14": "291",
 }
 
+ENDCLOTHING_SIZE_MAPPING = {
+    "3": "579",
+    "3.5": "517",
+    "4": "271",
+    "4.5": "516",
+    "5": "272",
+    "5.5": "273",
+    "6": "274",
+    "6.5": "275",
+    "7": "276",
+    "7.5": "277",
+    "8": "278",
+    "8.5": "279",
+    "9": "280",
+    "9.5": "281",
+    "10": "282",
+    "10.5": "283",
+    "11": "284",
+    "11.5": "285",
+    "12": "286",
+    "12.5": "287",
+    "13": "288",
+    "14": "289",
+}
+OFFSPRING_SIZE_MAPPING = {
+    "3": "030",
+    "3.5": "035",
+    "4": "040",
+    "4.5": "045",
+    "5": "050",
+    "5.5": "055",
+    "6": "060",
+    "6.5": "065",
+    "7": "070",
+    "7.5": "075",
+    "8": "080",
+    "8.5": "085",
+    "9": "090",
+    "9.5": "095",
+    "10": "100",
+    "10.5": "105",
+    "11": "110",
+    "11.5": "115",
+    "12": "120",
+    "12.5": "125",
+    "13": "130",
+    "13.5": "135",
+    "14": "140",
+}
+
 CONFIG_TYPE_MAPPING = {
     'store': str,
     'size': float,
@@ -97,6 +147,10 @@ class Config(object):
             self.size_code = ADIDAS_SIZE_MAPPING.get(self.size, None)
         elif self.store == 'footpatrol':
             self.size_code = FOOTPATROL_SIZE_MAPPING.get(self.size, None)
+        elif self.store == 'endclothing':
+            self.size_code = ENDCLOTHING_SIZE_MAPPING.get(self.size, None)
+        elif self.store == 'offspring':
+            self.size_code = OFFSPRING_SIZE_MAPPING.get(self.size, None)
         elif self.store == 'solebox':
             self.size_code = self.size
         if not self.size_code:
@@ -141,6 +195,8 @@ class Config(object):
         self.driver = "chrome"
         self.debug = False
         self.bypass_stock_check = False
+        self.use_proxy = False
+        self.keep_window_open = True
         if config.has_section("settings"):
             if config.has_option("settings", "driver"):
                 if config.get("settings", "driver") in ("chrome", "phantomjs", "firefox"):
@@ -153,10 +209,12 @@ class Config(object):
 
             if config.has_option("settings", "bypass_stock_check"):
                 self.bypass_stock_check = config.get("settings", "bypass_stock_check")
-
                 self.bypass_stock_check = True if self.bypass_stock_check == 'True' else False
 
-            self.keep_window_open = True
+            if config.has_option("settings", "use_proxy"):
+                self.use_proxy = config.get("settings", "use_proxy")
+                self.use_proxy = True if self.use_proxy == 'True' else False
+
             if config.has_option("settings", "keep_window_open"):
                 self.keep_window_open = config.get("settings", "bypass_stock_check")
 
@@ -260,7 +318,7 @@ class Config(object):
                         "Invalid type for parameter '{}'."
                         " Inputted value '{}'. Expected type {} and got type {}".format(param, value, _type,
                                                                                         type(value)))
-            v = _type(value)
+            _type(value)
         except ValueError:
             raise ValueError(
                 "Invalid type for parameter '{}'."

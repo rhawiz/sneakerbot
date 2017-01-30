@@ -1,0 +1,50 @@
+<html>
+
+<head>
+	<script type="text/javascript" src="adyen.encrypt.nodom.min.js"></script>
+	<script type="text/javascript" >
+		function adyenEncrypt(cardNumber, cvc, holderName, expiryMonth, expiryYear, generationtime, key) {
+
+			var options = {};
+
+			var cseInstance = adyen.encrypt.createEncryption(key, options);
+
+			var postData = {};
+
+			var cardData = {
+				number : cardNumber,
+				cvc : cvc,
+				holderName : holderName,
+				expiryMonth : expiryMonth,
+				expiryYear : expiryYear,
+				generationtime : generationtime
+			};
+
+			encryptedData = cseInstance.encrypt(cardData);
+
+			var d = document.getElementById("encrypted")
+			d.setAttribute("value",encryptedData)
+
+			var a = document.createElement("a")
+			a.setAttribute("id", "complete")
+			document.body.appendChild(a)
+
+			// AJAX call or different handling of the post data
+
+		}
+
+	</script>
+</head>
+
+<body onload="adyenEncrypt()">
+	<input type="hidden" id="fingerprint" value="">
+	<script type="text/javascript" src="https://live.adyen.com/hpp/js/df.js"></script>
+	<script>
+		dfDo("fingerprint");
+	</script>
+
+	<div id="encrypted" value></div>
+
+</body>
+
+</html>

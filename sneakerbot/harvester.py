@@ -60,5 +60,4 @@ def get_adidas_captcha_token():
         captcha_value = captcha_element.get_attribute("value")
         driver.close()
         return captcha_value
-
     driver.close()

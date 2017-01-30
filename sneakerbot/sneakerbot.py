@@ -1,9 +1,10 @@
 import re
-from multiprocessing import Process
 from time import sleep
 
 import click
+import requests
 from bs4 import BeautifulSoup
+from multiprocessing import Process
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -146,13 +147,17 @@ def adidas(config):
         "ajax": "true",
     }
 
+    print basket_payload
+
     # Initialise driver
     options = webdriver.ChromeOptions()
-    options.add_argument("--app=file:///")
-    options.add_argument("--no-startup-window")
-    # options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
+    options.add_argument("--app=https://www.adidas.co.uk")
+    # options.add_argument("--no-startup-window")
+    options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
     driver = webdriver.Chrome(chrome_options=options)
-    # driver.get(config.url)
+    sleep(3)
+    cookie1 = {"name": "yisqiiriqnrk", "value": "true"}
+    driver.add_cookie(cookie1)
 
     print "Attempting to cart product...\n"
     selenium_request(driver,
@@ -272,7 +277,7 @@ def worker(config):
 
 
 @click.command()
-@click.option('--config', default='../sample.cfg', prompt='Config file path', help='Config file path')
+@click.option('--config', default="s7,s7.5,s8,s8.5,s9,s9.5,s10,s10.5,s11", prompt='Config file path', help='Config file path')
 @click.option('--instances', default=1, prompt='Number of instances to run per config file', help='Number of instances')
 def main(config, instances):
     config_files = config.split(",")
@@ -280,6 +285,7 @@ def main(config, instances):
         file = file.strip()
         for i in range(0, instances):
             c = Config(file)
+
             p = Process(target=worker, args=(c,))
             p.start()
 
